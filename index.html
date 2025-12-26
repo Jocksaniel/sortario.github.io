@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EL SORTARIO</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class'
+    }
+  </script>
+
+  <!-- Fuente -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Estilos propios -->
+ <link rel="stylesheet" href="css/styles.css?v=1.0">
+  
+</head>
+
+<body class="bg-gray-900 text-gray-100 flex flex-col items-center justify-center min-h-screen p-0 transition-colors duration-300" id="body-root">
+        
+    <!-- ======= DASHBOARD SHELL (master wrapper) ======= -->
+    <div id="dashboard-shell" class="min-h-screen w-full bg-[#070707] text-white font-inter">
+    
+        <!-- Barra Superior: Topbar -->
+        <header id="dashboard-topbar"
+            class="fixed top-0 left-0 right-0 flex items-center justify-between px-4 py-4
+                bg-gradient-to-b from-black/80 to-[#0b0b0b] border-b border-gray-800 shadow-lg">
+
+            <div class="flex items-center flex-nowrap gap-4 w-full overflow-hidden">
+
+                <!-- Título -->
+                <div id="Titulo" class="flex-shrink-0">
+                    <h2 class="text-lg md:text-2xl lg:text-3xl font-extrabold text-gray-100 drop-shadow-lg truncate">
+                        EL SORTARIO
+                    </h2>
+                </div>
+
+                <!-- Ranking -->
+                <div id="rank-ticker" class="flex-grow overflow-hidden">
+                    <div id="rank-marquee"
+                        class="inline-block animate-marquee text-xs md:text-sm text-gray-300 truncate"
+                        role="status" aria-live="polite">
+                        
+                    </div>
+                </div>
+
+                <!-- Información de la ronda -->
+                <div id="round-info" class="flex-shrink-0 flex items-center gap-x-4 text-xs md:text-sm text-gray-200">
+                    <span>Ronda: <strong id="round-number">—</strong></span>
+                    <span>Estado: <strong id="round-state">—</strong></span>
+                    <span>Tiempo: <strong id="round-timer">00:00</strong></span>
+                    <span>Ganador: <strong id="round-winner">—</strong></span>
+                </div>
+
+                <!-- Jugadores y menú -->
+                <div class="flex-shrink-0 flex items-center gap-3 text-xs md:text-sm">
+
+                    <div class="text-gray-300">Jugadores: <strong id="players-count">0</strong></div>
+                    <div id="status-msg" class="text-gray-200 truncate">🎉 Bienvenido al Bingo!</div>
+                    <div id="status-user" class="hidden text-gray-300">👤 <span id="status-username">Invitado</span></div>
+                    <button id="btn-open-login" class="hidden bg-[#d4af37] text-black px-3 py-1 md:px-4 md:py-2 rounded-md font-semibold shadow hover:brightness-95 transition">
+                        Iniciar sesión
+                    </button>
+                    <!-- Menú de usuario -->
+                    <div class="inline-block text-left">
+                        <button id="user-menu-button" class="ml-3 bg-gray-800 text-yellow-300 px-3 py-1 rounded">
+                        <i class="fa fa-user"></i>
+                        </button>
+
+                        <!-- DROPDOWN -->
+                        <div id="user-menu" class="hidden absolute right-0 mt-2 bg-gray-800 text-white w-40 rounded shadow-lg border border-gray-700">
+                            <ul class="py-1">
+                                <li>
+                                    <button id="user-profile"
+                                        class="block w-full text-left px-4 py-2 hover:bg-gray-700">
+                                        Mi perfil
+                                    </button>
+                                </li>
+                                <li>
+                                    <button id="logout-button"
+                                        class="block w-full text-left px-4 py-2 hover:bg-gray-700">
+                                        Cerrar Sesión
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </header>
+
+    <!-- =======================
+        MODAL DE PERFIL (FUERA DEL HEADER)
+    ======================= -->
+    <div id="user-profile-modal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+
+        <div class="p-6 rounded-xl shadow-lg bg-[#1f2937] border border-gray-700 max-w-md mx-auto">
+            <h2 class="text-2xl font-bold text-yellow-400 mb-6 text-center">👤 Mi Perfil</h2>
+
+            <div class="space-y-4">
+
+                <div>
+                    <label class="block text-gray-300 font-semibold mb-1">Cédula</label>
+                    <input type="text" id="profile-cedula" value="12345678"
+                        class="w-full p-3 rounded-lg border border-gray-700 bg-[#111827] text-gray-400 cursor-not-allowed"
+                        readonly>
+                </div>
+
+                <div>
+                    <label class="block text-gray-300 font-semibold mb-1">Nombres</label>
+                    <input type="text" id="profile-nombres" placeholder="Tus nombres"
+                        class="w-full p-3 rounded-lg border border-gray-700 bg-[#111827] text-gray-200 focus:ring-2 focus:ring-purple-500">
+                </div>
+
+                <div>
+                    <label class="block mb-2 font-semibold text-gray-300">Género</label>
+                    <select id="profile-genero"
+                        class="w-full p-3 rounded-lg border border-gray-700 bg-[#111827] text-gray-200 focus:ring-2 focus:ring-purple-500">
+                        <option value="">Seleccione género...</option>
+                        <option value="Masculino">Masculino</option>
+                        <option value="Femenino">Femenino</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-gray-300 font-semibold mb-1">Teléfono</label>
+                    <input type="text" id="profile-telefono" placeholder="Número telefónico"
+                        class="w-full p-3 rounded-lg border border-gray-700 bg-[#111827] text-gray-200 focus:ring-2 focus:ring-purple-500">
+                </div>
+
+                <div>
+                    <label class="block text-gray-300 font-semibold mb-1">Fecha de nacimiento</label>
+                    <input type="date" id="profile-fnac"
+                        class="w-full p-3 rounded-lg border border-gray-700 bg-[#111827] text-gray-200 focus:ring-2 focus:ring-purple-500">
+                </div>
+
+                <button id="save-profile-btn"
+                    class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow">
+                    Guardar Información
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenido Principal -->
+    <div class="pt-[64px] flex min-h-[calc(100vh-64px)]">
+        <!-- Sidebar Izquierda con Lista de Jugadores -->
+        <aside id="dashboard-sidebar" class="w-72 bg-[#0b0b0b] border-r border-gray-800 p-4 hidden lg:block">
+            <!-- Título de la sección -->
+            <h3 class="text-lg font-bold text-[#f5e6b6] mb-3">Ranking en tiempo real</h3>
+
+            <!-- Lista de jugadores -->
+            <div id="dashboard-players-list" class="space-y-2 overflow-auto max-h-[calc(100vh-12rem)] pr-2"></div>
+
+            <!-- Separación para los botones -->
+            <div class="mt-6 flex flex-col gap-3">
+
+                <button id="mis-cartones-btn" 
+                        class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition-all text-lg shadow">
+                    Mis cartones
+                </button>
+
+                <button id="show-live-bingo-button" 
+                        class="bg-purple-700 hover:bg-purple-800 text-white font-bold py-3 px-8 rounded-lg transition-all text-xl shadow">
+                    Bingo en vivo
+                </button>
+            </div>
+        </aside>
+
+        <!-- Panel Central (donde va tu contenido actual) -->
+        <main id="dashboard-main" class="flex-1 p-3 flex items-center justify-center">
+
+            <div class="dashboard-layout">
+                <!-- Menú lateral horizontal compacto -->
+                <nav id="sidebarMenu"
+                    class="hidden w-full text-gray-200 border-yellow-500 flex flex-wrap items-center justify-center gap-2 py-2 px-3 shadow-md">
+
+                    <button data-tab="user-panel"
+                            class="tab-button flex items-center gap-1 px-2 py-1 rounded-md text-sm font-semibold text-yellow-400 hover:text-yellow-300 hover:bg-[#1f2937] transition">
+                        🎰 <span>Mi Panel</span>
+                    </button>
+
+                    <button data-tab="bingo-board"
+                            class="tab-button flex items-center gap-1 px-2 py-1 rounded-md text-sm font-semibold text-purple-400 hover:text-purple-300 hover:bg-[#1f2937] transition">
+                        🃏 <span>Tablero</span>
+                    </button>
+
+                    <button data-tab="cartones"
+                            class="tab-button flex items-center gap-1 px-2 py-1 rounded-md text-sm font-semibold text-green-400 hover:text-green-300 hover:bg-[#1f2937] transition">
+                        🎟️ <span>Cartones</span>
+                    </button>
+
+                    <button data-tab="vouchers"
+                            class="tab-button flex items-center gap-1 px-2 py-1 rounded-md text-sm font-semibold text-blue-400 hover:text-blue-300 hover:bg-[#1f2937] transition">
+                        💵 <span>Comprobantes</span>
+                    </button>
+
+                    <button data-tab="admin-panel"
+                            class="tab-button flex items-center gap-1 px-2 py-1 rounded-md text-sm font-semibold text-red-400 hover:text-red-300 hover:bg-[#1f2937] transition">
+                        👑 <span>Admin</span>
+                    </button>
+
+                    <button data-tab="calculo"
+                            class="tab-button flex items-center gap-1 px-2 py-1 rounded-md text-sm font-semibold text-indigo-400 hover:text-indigo-300 hover:bg-[#1f2937] transition">
+                        📊 <span>Cálculo</span>
+                    </button>
+
+                    <button data-tab="rondas-programadas"
+                            class="tab-button flex items-center gap-1 px-2 py-1 rounded-md text-sm font-semibold text-teal-400 hover:text-teal-300 hover:bg-[#1f2937] transition">
+                        ⏱️ <span>Rondas</span>
+                    </button>
+
+                    <button data-tab="configuracion"
+                            class="tab-button flex items-center gap-1 px-2 py-1 rounded-md text-sm font-semibold text-gray-400 hover:text-gray-300 hover:bg-[#1f2937] transition">
+                        ⚙️ <span>Configuración</span>
+                    </button>
+                </nav>
+
+                <!-- Pantalla Principal del Juego (inicialmente oculta) -->
+                <div id="game-screen" class="hidden">
+
+                    <body class="bg-gray-900 text-gray-100 flex flex-col items-center justify-center min-h-screen p-4 transition-colors duration-300" id="body-root">
+
+                    <!-- Contenido de la pestaña "Tablero" -->
+                    <div id="tab-bingo-board" class="tab-content hidden">
+
+                        <!-- Contenedor principal en dos columnas -->
+                        <div class="grid gap-6 w-full px-6">
+
+                            <!-- 🎯 COLUMNA DERECHA -->
+                            <div class="lg:col-span-3 p-6 rounded-xl shadow-lg border-gray-200">
+                            <h2 class="text-3xl font-bold text-white text-center mb-4">Tablero General</h2>
+                                <!-- Temporizador entre rondas -->
+                                <div id="next-round-timer" class="text-center text-red-600 font-bold mb-4 hidden"></div>
+
+                                <!-- Último y penúltimo número -->
+                                <div class="mb-4 text-center">
+                                    <div class="text-xl font-semibold text-white dark:text-gray-200">
+                                    Último número:
+                                    <span id="last-number-board" class="text-yellow-600 dark:text-blue-400 font-extrabold text-2xl">--</span>
+                                    </div>
+                                    <div class="text-sm text-gray-400 mt-1">
+                                    Penúltimo:
+                                    <span id="prev-number-board" class="font-semibold">--</span>
+                                    </div>
+                                </div>
+
+                                <!-- Tablero General -->
+                                <div class="flex justify-center flex-wrap mb-8 w-full">
+                                    <div class="flex space-x-4 overflow-x-auto pb-4">
+                                    <div class="flex flex-col items-center">
+                                        <div class="bingo-header-cell">B</div>
+                                        <div id="board-col-B" class="bingo-board-column"></div>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="bingo-header-cell">I</div>
+                                        <div id="board-col-I" class="bingo-board-column"></div>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="bingo-header-cell">N</div>
+                                        <div id="board-col-N" class="bingo-board-column"></div>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="bingo-header-cell">G</div>
+                                        <div id="board-col-G" class="bingo-board-column"></div>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="bingo-header-cell">O</div>
+                                        <div id="board-col-O" class="bingo-board-column"></div>
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tab-user-panel" class="tab-content hidden">
+                        <div class="flex flex-col space-y-6">
+
+                            <!-- 🔹 Sección de Gamificación (plegable) -->
+                            <div id="Progreso" class="bg-[#1f2937] p-6 rounded-xl shadow-lg border border-gray-700">
+                            <button
+                                id="toggle-gamification"
+                                class="w-full flex justify-between items-center text-2xl font-bold text-yellow-400 focus:outline-none transition-all"
+                            >
+                                <span>Progreso y Funciones</span>
+                                <i id="toggle-icon" class="fas fa-chevron-down text-gray-300 transition-transform duration-300"></i>
+                            </button>
+
+                            <div id="gamification-content"
+                                class="mt-4 overflow-hidden transition-all duration-500 ease-in-out max-h-0 opacity-0">
+
+                                <!-- Información del Usuario -->
+                                <div id="user-info-section" class="mb-6 p-4 bg-[#111827] rounded-lg border border-gray-700 text-gray-200 shadow-sm">
+                                <p class="text-lg font-semibold">Usuario: <span id="user-name-display" class="font-normal"></span></p>
+                                <p class="text-sm text-gray-400 break-words">ID: <span id="user-id-display"></span></p>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Estadísticas Personales -->
+                                <div class="p-4 bg-[#111827] rounded-lg shadow-sm border border-gray-700 text-gray-200">
+                                    <h3 class="text-xl font-semibold text-yellow-400">Estadísticas</h3>
+                                    <p>Rondas jugadas: <span id="games-played-count" class="font-bold">0</span></p>
+                                    <p>Rondas ganadas: <span id="games-won-count" class="font-bold">0</span></p>
+                                    <button id="download-personal-stats-button"
+                                            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1 px-3 rounded-lg text-sm mt-2">
+                                    Descargar Estadísticas Personales
+                                    </button>
+                                </div>
+
+                                <!-- Funciones Desbloqueables -->
+                                <div class="p-4 bg-[#111827] rounded-lg shadow-sm border border-gray-700 text-gray-200">
+                                    <h3 class="text-xl font-semibold text-yellow-400 mb-2">Funciones Desbloqueables</h3>
+                                    <div class="space-y-2">
+                                    <label class="flex items-center space-x-2">
+                                        <input type="checkbox" id="auto-mark-toggle" class="form-checkbox h-5 w-5 text-purple-500 rounded-full" disabled>
+                                        <span class="text-gray-300">Marcado Automático <i class="fas fa-lock text-gray-500"></i></span>
+                                    </label>
+                                    <label class="flex items-center space-x-2">
+                                        <input type="checkbox" id="auto-play-toggle" class="form-checkbox h-5 w-5 text-purple-500 rounded-full" disabled>
+                                        <span class="text-gray-300">Rejuego Automático <i class="fas fa-lock text-gray-500"></i></span>
+                                    </label>
+                                    <button id="bingo-message-copy"
+                                            class="bg-gray-700 hover:bg-gray-600 text-gray-200 font-bold py-2 px-4 rounded-lg transition-all text-sm w-full text-left" disabled>
+                                        <i class="fas fa-copy"></i> Copiar "Bingo" al portapapeles
+                                    </button>
+                                    <button id="whatsapp-bingo-button"
+                                            class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-all text-sm w-full text-left" disabled>
+                                        <i class="fab fa-whatsapp"></i> Cantar Bingo por WhatsApp
+                                    </button>
+                                    </div>
+                                </div>
+
+                                <!-- Insignias y Logros -->
+                                <div class="col-span-1 md:col-span-2 p-4 bg-[#111827] rounded-lg shadow-sm border border-gray-700">
+                                    <h3 class="text-xl font-semibold text-yellow-400 mb-2">Insignias y Logros</h3>
+                                    <div id="achievements-list" class="flex flex-wrap gap-4">
+                                    <div id="badge-first-win" class="text-center text-gray-400">
+                                        <i class="fas fa-trophy text-4xl text-yellow-500"></i>
+                                        <p class="text-sm font-semibold">Primera victoria</p>
+                                    </div>
+                                    <div id="badge-ten-games" class="text-center text-gray-400">
+                                        <i class="fas fa-star text-4xl text-purple-500"></i>
+                                        <p class="text-sm font-semibold">10 Rondas</p>
+                                    </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            </div>
+
+                            <!-- 🔹 Sección de Cartones -->
+                            <div class="bg-[#1f2937] p-6 rounded-xl shadow-lg border border-gray-700 flex flex-col flex-1">
+                                <h2 class="text-2xl font-bold text-yellow-400 mb-4">Mis Cartones</h2>
+
+                                <!-- Botones -->
+                                <div class="flex justify-center gap-4 mb-4">
+                                    <button id="download-cards-button"
+                                            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-all w-full md:w-1/2">
+                                    Descargar Cartones
+                                    </button>
+                                    <button id="reserve-card-button"
+                                            class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition-all w-full md:w-1/2">
+                                    Reservar Nuevo Cartón
+                                    </button>
+                                    <button id="reset-cards-button"
+                                            class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-6 rounded-lg transition-all w-full md:w-1/2">
+                                    Reiniciar Cartones
+                                    </button>
+                                    
+                                </div>
+
+                                <!-- Checkbox -->
+                                <label class="flex items-center justify-center gap-2 cursor-pointer">
+                                    <input id="check-cantar-bingo" type="checkbox"
+                                        class="w-5 h-5 accent-yellow-500">
+                                    <span class="text-yellow-300 font-semibold">
+                                        Cantar bingo
+                                    </span>
+                                </label>
+
+                                <!-- Mensaje informativo -->
+                                <div id="bingo-warning"
+                                    class="hidden text-sm text-yellow-400 italic mb-4">
+                                    ⚠️ Debes decir <strong>"BINGO"</strong> en voz alta
+                                </div>
+
+                                <!-- Contenedor de cartones -->
+                                <div id="bingo-cards-container" class="grid grid-cols-1 gap-6 p-4 flex-grow bg-[#111827] rounded-lg border border-gray-700">
+                                    <div id="cards-list" class="space-y-4">
+                                        <p class="text-gray-400 text-center">No tienes cartones asignados.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dentro de #tab-cartones -->
+                    <div id="tab-cartones" class="tab-content hidden bg-[#1f2937] p-6 rounded-xl shadow-lg border border-gray-700 text-gray-200">
+                        <h2 class="text-2xl font-bold text-yellow-400 mb-4">Cartones disponibles:
+                            <span id="cartones-count">0</span>
+                        </h2>
+
+                        <!-- Selector de modo -->
+                        <div id="botonCartones" class="flex items-center space-x-4 mb-6">
+                            
+                            <select id="view-mode" class="p-2 rounded-lg border border-gray-700 bg-[#111827] text-gray-200">
+                            <option value="admin">Ver como Admin</option>
+                            <option value="user">Ver como Usuario</option>
+                            </select>
+                            <button id="view-cards-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg">
+                            Ver
+                            </button>
+                        </div>
+                        <div id="cartones-elegidos-list" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4 mb-4"></div>
+                        <!-- Contenedor donde se generan los cartones -->
+                        <div id="cards-display" class="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 p-4 bg-[#111827] rounded-lg border border-gray-700">
+                        </div>
+                    </div>
+
+                    <div id="tab-vouchers" class="tab-content hidden">
+                    <div class="bg-[#1f2937] p-6 rounded-xl shadow-lg border border-gray-700">
+                        <h2 class="text-2xl font-bold text-yellow-400 mb-4">💳 Subir Comprobante y Solicitar Cartón</h2>
+
+                        <form id="voucher-form" class="space-y-5" enctype="multipart/form-data">
+
+                        <!-- Número de comprobante -->
+                        <div>
+                            <label for="numero-referencia" class="block font-semibold text-gray-200 mb-1">Número de Comprobante / Referencia</label>
+                            <input
+                            type="text"
+                            id="numero-referencia"
+                            name="numero_referencia"
+                            class="w-full p-3 border border-gray-700 rounded-lg bg-[#111827] text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                            placeholder="Ej: 1234567890 o #OP2025-01"
+                            required
+                            />
+                        </div>
+
+                        <div id="panel-cartones" class="flex flex-wrap justify-center mt-4"></div>
+
+                        <!-- Mensaje opcional -->
+                        <div>
+                            <label for="mensaje-comprobante" class="block font-semibold text-gray-200 mb-1">Mensaje (opcional)</label>
+                            <textarea
+                            id="mensaje-comprobante"
+                            name="mensaje"
+                            class="w-full h-24 p-4 rounded-lg bg-[#111827] text-gray-200 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                            placeholder="Ej: Adjunto comprobante de pago por 2 cartones."
+                            ></textarea>
+                        </div>
+
+                        <!-- Subir imágenes -->
+                        <div>
+                            <label class="block font-semibold text-gray-200 mb-1">Imágenes del Comprobante</label>
+                            <input type="file" id="voucher-image" name="imagenes" accept="image/*" multiple
+                            class="w-full p-2 border border-gray-700 bg-[#111827] text-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                            required
+                            />
+
+                            <p class="text-gray-400 text-sm mt-1">
+                            Puedes subir una o varias imágenes del comprobante.
+                            </p>
+                        </div>
+
+                        <!-- 🔹 Contenedor de previsualización -->
+                        <div id="voucher-preview" class="flex flex-wrap gap-3 mt-3"></div>
+
+                        <!-- Botón enviar -->
+                        <button
+                            id="submit-voucher-button"
+                            type="submit"
+                            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg w-full opacity-50 cursor-not-allowed transition-all"
+                        >
+                            Enviar Comprobante
+                        </button>
+
+                        <!-- Estado -->
+                        <div id="voucher-status-box" class="mt-5 p-4 rounded-lg bg-[#111827] text-gray-200 text-center font-medium border border-gray-700">
+                            Estado del comprobante: <span id="voucher-status-text">Ninguno enviado</span>
+                        </div>
+
+                        <div id="voucher-message-box" class="mt-4 p-4 rounded-lg text-sm text-center font-medium w-full hidden bg-[#111827] text-gray-200 border border-gray-700"></div>
+                        </form>
+                    </div>
+                    </div>
+                    
+                    <div id="tab-admin-panel" class="tab-content p-6 bg-[#111827] text-gray-200 rounded-lg shadow-lg border border-gray-700">
+                        <div class="grid grid-cols-2 lg:grid-cols-12 gap-6">
+                            <!-- Columna 1: Control de Partida y Tablero -->
+                            <div class="lg:col-span-5 bg-[#1f2937] p-4 rounded-xl shadow-lg border border-gray-700">
+                                <h2 class="text-2xl font-bold text-yellow-400 mb-4">🎛️ Control de Rondas</h2>
+
+                                <!-- Botones principales tamaño intermedio -->
+                                <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mb-4">
+                                    <button id="autonomo"
+                                            class="bg-green-600 hover:bg-green-700 text-white font-bold py-1.5 px-3 rounded-md shadow transition-all text-sm w-full sm:w-auto">
+                                        🤖 Autonomo
+                                    </button>
+                                    <button id="admin-call-number"
+                                            class="bg-green-600 hover:bg-green-700 text-white font-bold py-1.5 px-3 rounded-md shadow transition-all text-sm w-full sm:w-auto">
+                                        🎤 Cantar
+                                    </button>
+                                    <button id="admin-verify-cards"
+                                            class="bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-1.5 px-3 rounded-md shadow transition-all text-sm w-full sm:w-auto">
+                                        ✅ Verificar
+                                    </button>
+                                    <button id="admin-next-round"
+                                            class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-1.5 px-3 rounded-md shadow transition-all text-sm w-full sm:w-auto">
+                                        ⏭️ Siguiente
+                                    </button>
+                                    <button id="admin-reset-game"
+                                            class="bg-red-600 hover:bg-red-700 text-white font-bold py-1.5 px-3 rounded-md shadow transition-all text-sm w-full sm:w-auto">
+                                        🔄 Reiniciar
+                                    </button>
+                                </div>
+
+                                <!-- Temporizador -->
+                                <div id="verify-timer" class="mt-2 text-red-400 font-bold hidden">
+                                    ⏱️ Tiempo restante: <span id="verify-countdown">120</span>s
+                                </div>
+
+                                <!-- Auto-call -->
+                                <label class="flex items-center space-x-2 mt-4">
+                                    <input type="checkbox" id="admin-auto-toggle" class="h-4 w-4 text-green-500 focus:ring-green-400">
+                                    <span class="text-gray-300">Auto cantar números</span>
+                                </label>
+
+                                <div class="mt-2 flex items-center space-x-2">
+                                    <label for="auto-call-interval" class="text-sm text-gray-400">AutoCanto (s):</label>
+                                    <input type="number" id="auto-call-interval" min="1" value="5"
+                                        class="w-14 p-1 rounded border border-gray-700 bg-[#111827] text-gray-200 text-center focus:ring-2 focus:ring-purple-500">
+
+                                    <label for="auto-next-interval" class="text-sm text-gray-400">Siguiente ronda (s):</label>
+                                    <input type="number" id="auto-next-interval" min="1" value="5"
+                                        class="w-14 p-1 rounded border border-gray-700 bg-[#111827] text-gray-200 text-center focus:ring-2 focus:ring-purple-500">
+                                    
+                                    <label for="auto-brake-interval" class="text-sm text-gray-400">Brake (s):</label>
+                                    <input type="number" id="auto-brake-interval" min="1" value="5"
+                                        class="w-14 p-1 rounded border border-gray-700 bg-[#111827] text-gray-200 text-center focus:ring-2 focus:ring-purple-500">
+                                
+                                </div>
+
+                                <!-- Tablero -->
+                                <h3 class="text-xl font-semibold text-yellow-400 mt-6 mb-2">🎲 Tablero del Administrador</h3>
+
+                                <!-- Últimos números -->
+                                <div class="mb-4 text-center">
+                                    <div class="text-lg font-bold text-gray-200">
+                                        Último número:
+                                        <span id="last-number-admin" class="text-red-400 text-2xl">--</span>
+                                    </div>
+                                    <div class="text-sm text-gray-400 mt-1">
+                                        Penúltimo:
+                                        <span id="prev-number-admin" class="text-gray-300 font-semibold">--</span>
+                                    </div>
+                                </div>
+
+                                <!-- Columnas del tablero -->
+                                <div class="flex justify-center flex-wrap">
+                                    <div class="flex space-x-0 overflow-x-auto pb-4">
+                                        <div class="flex flex-col items-center">
+                                            <span class="text-2xl font-extrabold text-blue-400 mb-2">B</span>
+                                            <div id="admin-board-col-B" class="bingo-board-column"></div>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <span class="text-2xl font-extrabold text-blue-400 mb-2">I</span>
+                                            <div id="admin-board-col-I" class="bingo-board-column"></div>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <span class="text-2xl font-extrabold text-blue-400 mb-2">N</span>
+                                            <div id="admin-board-col-N" class="bingo-board-column"></div>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <span class="text-2xl font-extrabold text-blue-400 mb-2">G</span>
+                                            <div id="admin-board-col-G" class="bingo-board-column"></div>
+                                        </div>
+                                        <div class="flex flex-col items-center">
+                                            <span class="text-2xl font-extrabold text-blue-400 mb-2">O</span>
+                                            <div id="admin-board-col-O" class="bingo-board-column"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Columna 2: Gestión Administrativa y Reportes (ANCHO COMPLETO) -->
+                            <div class="lg:col-span-7 bg-[#1f2937] p-6 rounded-xl shadow-lg border border-gray-700 text-gray-200">
+                                <h2 class="text-2xl font-bold text-yellow-400 mb-4">📊 Gestión Administrativa y Reportes</h2>
+                                <!-- Contenedor en fila -->
+                                <div class="flex gap-6 mb-6 mt-6">
+                                    <!-- Panel de Estadísticas Globales -->
+                                    <div class="flex-1 p-4 bg-[#111827] rounded-lg shadow-sm border border-gray-700 text-gray-200">
+                                        <h3 class="text-xl font-semibold text-yellow-300 mb-2">Estadísticas Globales</h3>
+                                        <p>Total de usuarios: <span id="stats-total-users" class="font-bold text-green-400">0</span></p>
+                                        <p>Rondas jugadas: <span id="stats-total-games" class="font-bold text-purple-400">0</span></p>
+                                        <p>Bingos reclamados: <span id="stats-total-bingos" class="font-bold text-red-400">0</span></p>
+                                    </div>
+
+                                    <!-- Cartones disponibles -->
+                                    <div class="flex-1 p-4 bg-[#111827] rounded-lg shadow border border-gray-700 text-gray-200">
+                                        <h3 class="text-lg font-semibold text-yellow-300 mb-2">Cartones disponibles</h3>
+                                        <p>Públicos: <span id="cartones-publicos-count" class="font-bold text-green-400">0</span></p>
+                                        <p>No Públicos: <span id="cartones-no-publicos-count" class="font-bold text-red-400">0</span></p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Generar cartones -->
+                                <div class="mb-6 mt-6">
+                                    <h3 class="text-xl font-semibold text-yellow-300 mb-2">Generar Cartones</h3>
+                                    <div class="flex mb-2">
+                                        <input type="number" id="num-cards-to-generate" min="1" placeholder="Cantidad de cartones"
+                                            class="p-2 border border-gray-700 rounded-lg mr-2 w-48 bg-[#111827] text-gray-200 focus:ring-2 focus:ring-purple-500">
+                                        <button id="generate-cards-button"
+                                                class="px-4 py-2 rounded bg-red-600 hover:bg-red-700 text-white font-bold shadow transition-all">
+                                            🎟️ Generar Cartones
+                                        </button>
+                                    </div>
+                                    <div id="admin-cards-message-box"
+                                        class="mt-2 p-2 rounded-lg text-sm text-center font-medium w-full hidden bg-[#1f2937] text-gray-200 border border-gray-700"></div>
+                                </div>
+
+                                <!-- Cartones Ganadores -->
+                                <div id="Bingos_cantados" class="mt-4 mb-4 space-y-2">
+                                    <h3 class="text-xl font-semibold text-yellow-300 mb-2">Bingos reclamados</h3>
+                                    <p id="Cartones_reclamos" class="text-gray-400 text-sm">Aún no hay bingos.</p>
+                                </div>
+
+                                <!-- Cartones Ganadores -->
+                                <div id="ganadores_cartones" class="mt-4 mb-4 space-y-2">
+                                    <h3 class="text-xl font-semibold text-yellow-300 mb-2">Ganadores</h3>
+                                    <p id="Ganadores" class="text-gray-400 text-sm">Aún no hay ganadores registrados.</p>
+                                </div>
+
+                                <!-- Botones de Descarga de Reportes -->
+                                <div class="mb-6">
+                                    <h3 class="text-xl font-semibold text-yellow-300 mb-2">Descargar Reportes</h3>
+                                    <div class="flex flex-col md:flex-row md:space-x-2 md:space-y-0 space-y-2">
+                                        <button id="download-users-button"
+                                                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow transition-all text-sm">
+                                            <i class="fas fa-file-csv mr-2"></i> Usuarios (CSV)
+                                        </button>
+                                        <button id="download-global-stats-button"
+                                                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow transition-all text-sm">
+                                            <i class="fas fa-file-csv mr-2"></i> Estadísticas Globales (CSV)
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Gestión de cartones apartados -->
+
+                                <h3 id="Apartados" class="text-xl font-semibold text-yellow-300 mb-4">🃏 Gestión de Cartones Apartados</h3>
+                                <div class="mb-3">
+                                  <input id="apartados-search" type="search" placeholder="Buscar por número de cartón o cédula..." class="w-full md:w-1/2 p-2 rounded bg-[#111827] border border-gray-700 text-gray-200" />
+                                </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-sm text-center text-gray-200 border border-gray-700 table-fixed rounded-lg">
+                                        <thead class="bg-[#1f2937] text-yellow-400">
+                                            <tr>
+                                                <th class="px-1 py-1 w-2/12 whitespace-nowrap">Nro Cartón</th>
+                                                <th class="px-1 py-1 w-2/12 whitespace-nowrap">Cédula</th>
+                                                <th class="px-1 py-1 w-2/12 whitespace-nowrap">Nombre</th>
+                                                <th class="px-1 py-1 w-2/12 whitespace-nowrap">Teléfono</th>
+                                                <th class="px-1 py-1 w-2/12 whitespace-nowrap">Comprobante</th>
+                                                <th class="px-1 py-1 w-2/12 whitespace-nowrap">Aprobado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="cartones-apartados-body">
+                                            <tr>
+                                                <td colspan="6" class="text-center text-gray-400 py-2">No hay cartones apartados.</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pestaña de Cálculo -->
+                    <div id="tab-calculo" class="tab-content hidden p-6 bg-[#111827] text-gray-200 rounded-lg shadow-lg border border-gray-700" data-tab="calculo">
+                        <h2 class="text-3xl font-bold text-yellow-400 mb-6 text-center">Cálculo y Proyecciones</h2>
+
+                        <!-- Entradas -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                            <div>
+                                <label class="block text-gray-300 mb-2 font-semibold">Cantidad de cartones</label>
+                                <input id="calc-cartones" type="number" placeholder="Ej: 100"
+                                    class="w-full p-2 rounded-lg bg-[#1f2937] text-gray-200 text-center font-bold border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-gray-300 mb-2 font-semibold">Precio por cartón</label>
+                                <input id="calc-precio" type="number" value="1"
+                                    class="w-full p-2 rounded-lg bg-[#1f2937] text-gray-200 text-center font-bold border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-gray-300 mb-2 font-semibold">Número de Rondas</label>
+                                <input id="calc-partidas" type="number" value="3"
+                                    class="w-full p-2 rounded-lg bg-[#1f2937] text-gray-200 text-center font-bold border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all">
+                            </div>
+                        </div>
+
+                        <!-- Contenedor dinámico para ganadores -->
+                        <div id="ganadores-container" class="mb-6 space-y-4"></div>
+
+                        <!-- Botones principales -->
+                        <div class="flex flex-wrap justify-center gap-4 mb-6">
+                            <button id="calc-btn"
+                                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow transition-all">
+                                Calcular
+                            </button>
+                            <button id="open-rounds-btn"
+                                class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow transition-all">
+                                Programar Rondas
+                            </button>
+                            <button id="generate-projection-btn"
+                                class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-lg shadow transition-all">
+                                Guardar Proyección
+                            </button>
+                        </div>
+
+                        <!-- Historial de Proyecciones -->
+                        <div id="projection-history" class="mt-6 bg-[#1f2937] p-4 rounded-lg shadow space-y-2 border border-gray-700 text-gray-200">
+                            <h3 class="font-bold text-yellow-400 mb-2 flex justify-between items-center">
+                                <span>📜 Historial de Proyecciones</span>
+                                <button id="refresh-projections"
+                                    class="text-sm bg-gray-700 hover:bg-gray-800 text-white px-3 py-1 rounded-md transition">
+                                    🔄 Actualizar
+                                </button>
+                            </h3>
+                            <ul id="projection-list" class="space-y-2"></ul>
+                        </div>
+
+                        <!-- Resultados -->
+                        <div id="calc-resultados" class="hidden mt-8 bg-[#1f2937] p-6 rounded-lg shadow-lg border border-gray-700">
+                            <h3 class="text-xl font-bold text-yellow-400 mb-4 text-center">Resultados</h3>
+                            <div class="mb-2">
+                                <p class="text-gray-300"><strong>Total Recaudado:</strong> <span id="calc-total" class="text-green-400"></span></p>
+                            </div>
+                            <h4 class="text-lg font-bold text-yellow-300 mt-4 mb-2">Premios por Rondas:</h4>
+                            <div id="calc-premios" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-6"></div>
+
+                            <div class="mt-4">
+                                <p class="text-gray-300"><strong>Ganancia:</strong>
+                                    <span id="calc-ganancia" class="text-green-400"></span>
+                                    (<span id="calc-ganancia-pct" class="text-green-300"></span>)
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Panel solo para admin -->
+                    <div id="tab-rondas-programadas" class="tab-content hidden p-6 bg-[#111827] text-gray-200 rounded-lg shadow-lg border border-gray-700">
+                        <h2 class="text-2xl font-bold text-yellow-400 mb-4">Rondas Programadas</h2>
+                        <div id="lista-grupos" class="space-y-6"></div>
+                    </div>
+
+                    <!-- 🧠 Pestaña Configuración -->
+                    <div id="tab-configuracion" class="tab-content hidden p-6 bg-[#111827] text-gray-200 rounded-lg shadow-lg border border-gray-700">
+
+                        <!-- 🌐 Encabezado -->
+                        <h2 class="text-2xl font-bold text-center text-yellow-400 mb-6">⚙️ Configuración del Sistema</h2>
+
+                        <!-- Pestañas internas -->
+                        <div class="flex justify-center mb-4 space-x-4">
+                            <button class="config-tab-btn bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition" data-target="#config-whatsapp">🤖 WhatsApp</button>
+                            <button class="config-tab-btn bg-gray-700 text-gray-200 px-4 py-2 rounded-lg hover:bg-gray-600 transition" data-target="#config-Telegram">📱 Telegram</button>
+                            <button class="config-tab-btn bg-gray-700 text-gray-200 px-4 py-2 rounded-lg hover:bg-gray-600 transition" data-target="#config-juego">🎮 Juego</button>
+                            <button class="config-tab-btn bg-gray-700 text-gray-200 px-4 py-2 rounded-lg hover:bg-gray-600 transition" data-target="#config-permisos">🧩 Permisos</button>
+                        </div>
+
+                        <!-- Contenedor general -->
+                        <div class="bg-[#1f2937] p-6 rounded-lg shadow-inner space-y-6 border border-gray-700">
+
+                            <!-- ====================================== -->
+                            <!-- 🤖 CONFIGURACIÓN DE WHATSAPP -->
+                            <!-- ====================================== -->
+                            <div id="config-whatsapp" class="config-section">
+                                <h3 class="text-xl font-semibold text-yellow-400 mb-4">Conexión del Bot de WhatsApp</h3>
+
+                                <!-- Estado -->
+                                <div class="flex items-center justify-center gap-2 mb-4">
+                                    <div id="bot-status-indicator" class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <span id="bot-status-text" class="font-medium text-gray-300">Desconectado ❌</span>
+                                </div>
+
+                                <!-- Botones -->
+                                <div class="flex justify-center flex-wrap gap-4 mt-4">
+                                    <button id="connect-bot-btn" class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">🔗 Conectar</button>
+                                    <button id="disconnect-bot-btn" class="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">❌ Desconectar</button>
+                                    <button id="list-groups-btn" class="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">📋 Listar Grupos</button>
+                                </div>
+
+                                <!-- Mensaje de prueba -->
+                                <div class="mt-6">
+                                    <label for="test-message-input" class="font-medium text-gray-300 block mb-1">🧪 Enviar mensaje de prueba:</label>
+                                    <textarea id="test-message-input"
+                                            class="w-full border border-gray-700 rounded-md p-2 bg-[#111827] text-gray-200 focus:ring-2 focus:ring-green-400 focus:outline-none"
+                                            rows="3" placeholder="Mensaje de prueba...">🎉 ¡Hola grupo! Este es un mensaje automático del BingoBot.</textarea>
+                                    <button id="test-msg-btn" class="mt-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">Enviar</button>
+                                </div>
+
+                                <!-- QR -->
+                                <div id="qr-container" class="hidden text-center mt-6">
+                                    <div id="bot-loader" class="hidden flex justify-center mb-3">
+                                        <div class="animate-spin rounded-full h-10 w-10 border-t-4 border-blue-500 border-solid"></div>
+                                    </div>
+                                    <p class="text-gray-300 mb-2">📱 Escanea este código desde tu WhatsApp:</p>
+                                    <img id="qr-image" class="mx-auto border border-gray-700 shadow-lg rounded-lg p-2 w-56 h-56 object-contain bg-[#111827]" alt="Código QR del bot" />
+                                </div>
+
+                                <!-- Lista de grupos -->
+                                <div id="group-list" class="mt-6 bg-[#111827] p-4 rounded-lg shadow-inner text-gray-200 overflow-auto max-h-64 space-y-2 border border-gray-700">
+                                    <p class="text-gray-400 text-sm">Aquí aparecerán los grupos disponibles una vez conectado el bot.</p>
+                                </div>
+
+                                <!-- Panel de miembros -->
+                                <div id="members-section" class="mt-6 bg-[#111827] p-4 rounded-lg shadow-md hidden border border-gray-700">
+                                    <h4 class="text-lg font-semibold text-yellow-400 mb-3">👥 Miembros del grupo</h4>
+
+                                    <!-- Buscador -->
+                                    <input type="text" id="member-search"
+                                        placeholder="🔍 Buscar miembro por nombre, teléfono o rol..."
+                                        class="w-full mb-3 border border-gray-700 rounded-md p-2 bg-[#111827] text-gray-200 focus:ring-2 focus:ring-green-400 focus:outline-none" />
+                                </div>
+
+                                <div id="members-warning-banner" class="hidden mb-2 p-2 rounded text-yellow-800 bg-yellow-200"></div>
+
+                                <!-- Lista -->
+                                <div id="members-list" class="space-y-2"></div>
+                            </div>
+
+                            <!-- ====================================== -->
+                            <!-- 🎮 CONFIGURACIÓN DEL JUEGO -->
+                            <!-- ====================================== -->
+                            <div id="config-juego" class="config-section hidden p-6 bg-[#111827] text-gray-200 rounded-lg shadow-lg border border-gray-700">
+                                <h3 class="text-xl font-semibold text-yellow-400 mb-6">🎮 Configuración del Juego</h3>
+
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+                                    <!-- Tiempo de espera entre rondas -->
+                                    <div class="bg-[#1f2937] p-4 rounded-lg shadow-sm border border-gray-700">
+                                        <h4 class="text-lg font-semibold text-green-400 mb-2">⏱️ Tiempo de espera entre rondas</h4>
+                                        <p class="text-gray-300 text-sm mb-3">Define cuántos minutos esperar antes de iniciar una nueva ronda automáticamente.</p>
+
+                                        <label for="tiempo-espera" class="block text-sm font-medium text-gray-200 mb-1">Minutos de espera:</label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="number" id="tiempo-espera" name="tiempo-espera"
+                                                class="w-full p-2 border border-gray-700 rounded-md text-sm bg-[#111827] text-gray-200 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                                                placeholder="Ej. 10" min="0">
+                                            <span class="text-gray-300 font-medium">minutos</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Inicio automático de rondas -->
+                                    <div class="bg-[#1f2937] p-4 rounded-lg shadow-sm border border-gray-700">
+                                        <h4 class="text-lg font-medium text-yellow-400 mb-2">🤖 Inicio automático de rondas</h4>
+                                        <p class="text-gray-400 text-sm mb-3">Activa el modo automático y define el tiempo de espera antes de la primera ronda.</p>
+                                        <div class="space-y-3">
+                                            <label class="flex items-center gap-2">
+                                                <input type="checkbox" id="modo-automatico" class="h-4 w-4 text-green-500">
+                                                <span class="text-gray-200 font-medium">Activar modo automático</span>
+                                            </label>
+
+                                            <div class="flex items-center gap-2">
+                                                <label for="horas-inicio" class="block text-sm font-medium text-gray-200 mb-1">🕓 Iniciar después de:</label>
+                                                <input type="number" id="minutos-iniciar" name="minutos-iniciar" min="0"
+                                                    class="w-full p-2 border border-gray-700 rounded-md text-sm bg-[#111827] text-gray-200 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                                                    placeholder="Ej. 10">
+                                                <span class="text-gray-300 font-medium">hora(s)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Mensaje de bienvenida -->
+                                    <div class="bg-[#1f2937] p-4 rounded-lg shadow-sm border border-gray-700">
+                                        <h4 class="text-lg font-medium text-yellow-400 mb-2">💬 Mensaje de bienvenida</h4>
+                                        <p class="text-gray-400 text-sm mb-3">Personaliza el mensaje que se enviará al iniciar una nueva partida.</p>
+                                        <textarea id="mensaje-bienvenida" rows="3"
+                                                class="w-full border border-gray-700 rounded-md p-2 bg-[#111827] text-gray-200 focus:ring-2 focus:ring-green-400 focus:outline-none"
+                                                placeholder="Ejemplo: 🎉 ¡Bienvenidos al Bingo del día! Que la suerte los acompañe.">🎉 ¡Bienvenidos al Bingo del día! Que la suerte los acompañe.</textarea>
+                                    </div>
+
+                                    <!-- Intervalo entre sorteos -->
+                                    <div class="bg-[#1f2937] p-4 rounded-lg shadow-sm border border-gray-700">
+                                        <h4 class="text-lg font-medium text-yellow-400 mb-2">⏳ Intervalo entre sorteos</h4>
+                                        <p class="block text-sm font-medium text-gray-200 mb-1">Tiempo (en segundos) entre cada número sorteado.</p>
+                                        <div class="flex items-center gap-2">
+                                            <input type="number" id="intervalo-sorteos" min="0"
+                                                class="w-full p-2 border border-gray-700 rounded-md text-sm bg-[#111827] text-gray-200 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                                                placeholder="Ej. 10">
+                                            <span class="text-gray-300 font-medium">Segundos</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Notificación automática -->
+                                    <div class="bg-[#1f2937] p-4 rounded-lg shadow-sm border border-gray-700">
+                                        <h4 class="text-lg font-medium text-yellow-400 mb-2">🔔 Notificación automática de pago</h4>
+                                        <p class="text-gray-400 text-sm mb-3">El sistema notificará automáticamente cuando un participante confirme su pago.</p>
+                                        
+                                        <label class="flex items-center gap-2 mb-3">
+                                            <input type="checkbox" id="notificacion-automatica" class="h-4 w-4 text-green-500">
+                                            <span class="text-gray-200 font-medium">Activar notificación automática</span>
+                                        </label>
+                                        <label for="minutos-notificacion" class="block text-sm font-medium text-gray-200 mb-1">Minutos antes de notificar:</label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="number" id="minutos-notificacion" name="minutos-notificacion" min="0"
+                                                class="w-full p-2 border border-gray-700 rounded-md text-sm bg-[#111827] text-gray-200 focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                                                placeholder="Ej. 10">
+                                            <span class="text-gray-300 font-medium">minutos</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Sección: Plantilla de mensaje personalizado -->
+                                <div class="mt-8 bg-[#1f2937] p-5 rounded-lg shadow-sm border border-gray-700">
+                                    <h4 class="text-lg font-semibold text-yellow-400 mb-3">📜 Plantilla de mensaje personalizado</h4>
+                                    <p class="text-gray-400 text-sm mb-4">
+                                        Aquí puedes definir un mensaje que se enviará automáticamente a los jugadores con datos dinámicos.
+                                        Usa las variables de abajo para personalizar el contenido.
+                                    </p>
+
+                                    <!-- Variables disponibles -->
+                                    <div class="flex flex-wrap gap-2 mb-4">
+                                        <button class="var-btn bg-gray-700 hover:bg-gray-600 text-gray-200 px-2 py-1 rounded text-sm" data-var="{nombre}">👤 Nombre</button>
+                                        <button class="var-btn bg-gray-700 hover:bg-gray-600 text-gray-200 px-2 py-1 rounded text-sm" data-var="{numeros}">🎟️ Números elegidos</button>
+                                        <button class="var-btn bg-gray-700 hover:bg-gray-600 text-gray-200 px-2 py-1 rounded text-sm" data-var="{comprobante}">🧾 Comprobante</button>
+                                        <button class="var-btn bg-gray-700 hover:bg-gray-600 text-gray-200 px-2 py-1 rounded text-sm" data-var="{imagen_comprobante}">🖼️ Imagen del comprobante</button>
+                                        <button class="var-btn bg-gray-700 hover:bg-gray-600 text-gray-200 px-2 py-1 rounded text-sm" data-var="{fecha}">📅 Fecha</button>
+                                    </div>
+
+                                    <!-- Campo de texto para el mensaje -->
+                                    <textarea id="plantilla-mensaje" rows="4"
+                                            class="w-full border border-gray-700 rounded-md p-3 bg-[#111827] text-gray-200 focus:ring-2 focus:ring-green-400 focus:outline-none"
+                                            placeholder="Ejemplo: Hola {nombre}, gracias por participar. Hemos recibido tu pago ({comprobante}) con los números {numeros}. ¡Buena suerte!">
+                            Hola {nombre}, gracias por participar. Hemos recibido tu pago ({comprobante}) con los números {numeros}. ¡Buena suerte!
+                                    </textarea>
+                                    <p class="text-gray-400 text-sm mt-2">🔧 Las variables se reemplazarán automáticamente con los datos reales del jugador.</p>
+                                </div>
+
+                                <!-- Botón Guardar -->
+                                <div class="text-right pt-6">
+                                    <button id="guardar-config-juego"
+                                            class="bg-green-600 hover:bg-green-700 text-white font-medium px-5 py-2 rounded-lg shadow transition">
+                                        💾 Guardar Configuración
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- 🧩 CONFIGURACIÓN DE PERMISOS POR ROL -->
+                            <div id="config-permisos" class="config-section hidden p-6 bg-[#111827] text-gray-200 rounded-lg shadow-lg border border-gray-700">
+                                <h2 class="text-2xl font-bold mb-6 flex items-center gap-2 text-yellow-400">
+                                    <i class="fas fa-user-shield text-green-500"></i> Configuración de Permisos por Rol
+                                </h2>
+
+                                <!-- Selector de Rol -->
+                                <div class="mb-6">
+                                    <label for="rol-selector" class="block text-sm font-semibold text-gray-300 mb-2">
+                                        Seleccionar Rol:
+                                    </label>
+                                    <select id="rol-selector"
+                                        class="w-full border border-gray-700 bg-[#1f2937] text-gray-200 rounded-lg px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                                        <option value="" disabled selected class="text-gray-400">-- Selecciona un rol --</option>
+                                        <!-- Opciones dinámicas se insertan aquí -->
+                                    </select>
+                                </div>
+
+                                <!-- Lista de Permisos -->
+                                <div id="permiso-lista" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <!-- Permisos se insertan dinámicamente aquí -->
+                                    <label class="flex items-center space-x-2 bg-[#1f2937] p-3 rounded-lg border border-gray-700 shadow-sm">
+                                        <input type="checkbox" class="permiso-checkbox text-green-500 focus:ring-green-400" data-perm="ver_cartones">
+                                        <span class="text-gray-200">Ver cartones</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 bg-[#1f2937] p-3 rounded-lg border border-gray-700 shadow-sm">
+                                        <input type="checkbox" class="permiso-checkbox text-green-500 focus:ring-green-400" data-perm="subir_comprobante">
+                                        <span class="text-gray-200">Subir comprobante</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 bg-[#1f2937] p-3 rounded-lg border border-gray-700 shadow-sm">
+                                        <input type="checkbox" class="permiso-checkbox text-green-500 focus:ring-green-400" data-perm="historial_pagos">
+                                        <span class="text-gray-200">Ver historial de pagos</span>
+                                    </label>
+                                    <label class="flex items-center space-x-2 bg-[#1f2937] p-3 rounded-lg border border-gray-700 shadow-sm">
+                                        <input type="checkbox" class="permiso-checkbox text-green-500 focus:ring-green-400" data-perm="configuracion">
+                                        <span class="text-gray-200">Acceder a configuración</span>
+                                    </label>
+                                    <!-- Puedes agregar más permisos aquí -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sample-bingo-card" class="hidden w-full max-w-sm bg-gray-700 p-6 rounded-xl shadow-lg border border-gray-600 mb-8">
+                <h2 class="text-2xl font-bold text-gray-200 mb-4">¡Juega Bingo!</h2>
+                <div class="bingo-card-grid">
+                
+                    <div class="bingo-header-cell text-WHITE font-bold text-4xl">B</div>
+                    <div class="bingo-header-cell text-WHITE font-bold text-4xl">I</div>
+                    <div class="bingo-header-cell text-WHITE font-bold text-4xl">N</div>
+                    <div class="bingo-header-cell text-WHITE font-bold text-4xl">G</div>
+                    <div class="bingo-header-cell text-WHITE font-bold text-4xl">O</div>
+                    <div class="bingo-card-cell marked">8</div>
+                    <div class="bingo-card-cell text-gray-200 font-bold">28</div>
+                    <div class="bingo-card-cell text-gray-200 font-bold">43</div>
+                    <div class="bingo-card-cell marked">60</div>
+                    <div class="bingo-card-cell text-gray-200 font-bold">75</div>
+                    <div class="bingo-card-cell text-gray-200 font-bold">14</div>
+                    <div class="bingo-card-cell marked">17</div>
+                    <div class="bingo-card-cell text-gray-200 font-bold">42</div>
+                    <div class="bingo-card-cell text-gray-200 font-bold">46</div>
+                    <div class="bingo-card-cell marked">65</div>
+                    <div class="bingo-card-cell text-gray-200 font-bold">1</div>
+                    <div class="bingo-card-cell text-gray-200 font-bold">29</div>
+                    <div class="bingo-card-cell marked">FREE</div>
+                    <div class="bingo-card-cell marked">49</div>
+                    <div class="bingo-card-cell marked">66</div>
+                    <div class="bingo-card-cell marked">13</div>
+                    <div class="bingo-card-cell text-gray-200 font-bold">22</div>
+                    <div class="bingo-card-cell marked">36</div>
+                    <div class="bingo-card-cell marked">50</div>
+                    <div class="bingo-card-cell text-gray-200 font-bold">71</div>
+                    <div class="bingo-card-cell text-gray-200 font-bold">15</div>
+                    <div class="bingo-card-cell marked">23</div>
+                    <div class="bingo-card-cell marked">38</div>
+                    <div class="bingo-card-cell text-gray-200 font-bold">54</div>
+                    <div class="bingo-card-cell marked">73</div>
+                </div>
+            </div>
+
+            <!-- ======================== MIS CARTONES ========================= -->
+            <div id="mis-cartones-view" class="hidden w-full">
+
+                <div class="bg-gray-50 p-6 rounded-xl shadow-lg border border-gray-200 my-6 mx-4">
+
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Consultar Mis Cartones</h2>
+
+                    <!-- Entrada cédula -->
+                    <div class="flex justify-center gap-4 mb-6">
+                        <input id="cedula-mis-cartones" 
+                            type="text" 
+                            placeholder="Cédula"
+                            class="p-3 rounded-lg text-black w-56 text-center font-bold border border-gray-300">
+
+                        <button id="btn-buscar-mis-cartones"
+                                class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg">
+                            Buscar
+                        </button>
+                    </div>
+
+                    <!-- Controles -->
+                    <div id="mis-cartones-controls" class="hidden mb-4 flex justify-center gap-4">
+                        <button id="mis-cartones-download"
+                                class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg">
+                            Descargar cartones
+                        </button>
+
+                        <button id="mis-cartones-reset"
+                                class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-lg">
+                            Limpiar
+                        </button>
+                    </div>
+
+                    <!-- Contenedor cartones -->
+                    <div id="mis-cartones-grid"
+                        class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 p-4">
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Pantalla de Tablero en Vivo -->
+            <div id="live-bingo-board-screen" class="hidden flex flex-col items-center p-8">
+                <div class="flex items-center mb-6">
+                    <button id="back-from-live-board" class="bg-gray-300 hover:bg-gray-400 dark:hover:bg-gray-500 text-gray-800 dark:text-gray-100 font-bold py-2 px-4 rounded-lg mr-4">
+                    <i class="fas fa-arrow-left"></i> Volver
+                    </button>
+                    <h1 class="text-3xl font-bold">Tablero de Bingo en Vivo</h1>
+                </div>
+                <div class="mb-4 text-center">
+                <div class="text-xl font-semibold text-white dark:text-gray-200">
+                    Último número: 
+                    <span id="last-number-board-live" class="text-yellow-600 dark:text-blue-400 font-extrabold text-2xl">--</span>
+                </div>
+                <div class="text-sm text-gray-400 mt-1">
+                    Penúltimo: 
+                    <span id="prev-number-board-live" class="font-semibold">--</span>
+                </div>
+                </div>
+
+                <!-- Tablero con 75 números -->
+                <div class="flex justify-center flex-wrap mb-8 w-full">
+                    <div class="flex space-x-4 overflow-x-auto pb-4">
+                    <div class="flex flex-col items-center">
+                        <div class="bingo-header-cell">B</div>
+                        <div id="board-live-col-B" class="bingo-board-column"></div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="bingo-header-cell">I</div>
+                        <div id="board-live-col-I" class="bingo-board-column"></div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="bingo-header-cell">N</div>
+                        <div id="board-live-col-N" class="bingo-board-column"></div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="bingo-header-cell">G</div>
+                        <div id="board-live-col-G" class="bingo-board-column"></div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="bingo-header-cell">O</div>
+                        <div id="board-live-col-O" class="bingo-board-column"></div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel de apartar cartones -->
+            <div id="apartado-cartones" class="hidden mt-6">
+
+                <!-- Paso 1: Ingresar cédula -->
+                <div id="cedula-panel" class="hidden mt-6">
+                    <h2 class="text-3xl font-bold text-yellow-500 mb-4 text-center">Apartar Cartones</h2>
+                    <p class="text-gray-300 mb-6 text-center">Ingrese su cédula para continuar:</p>
+
+                    <div class="flex justify-center items-center gap-4">
+                        <input id="cedula-input" type="text" placeholder="Cédula" 
+                            class="p-2 rounded-lg text-black w-48 text-center font-bold">
+                        <button id="cedula-btn" 
+                            class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-lg transition-all">
+                            Continuar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Paso 2: Cartones disponibles (oculto hasta validar cédula) -->
+                <div id="cartones-panel" class="hidden mt-6">
+                    <h2 class="text-3xl font-bold text-yellow-500 mb-4 text-center">Cartones disponibles</h2>
+                    <p class="text-gray-300 mb-6 text-center">Seleccione los cartones que desea apartar.</p>
+
+                    <div id="cartones-vacio" class="grid grid-cols-5 gap-6">
+                        <!-- Aquí se mostrarán los cartones (vacío por ahora) -->
+                    </div>
+
+                    <div class="text-center mt-6">
+                        <button id="cerrar-cartones" 
+                            class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg transition-all">
+                            Cerrar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overlay -->
+            <div id="overlay-cartones" class="hidden fixed inset-0 bg-black/50"></div>
+
+            <!-- Modal de Notificaciones (para Bingo) -->
+            <div id="notification-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center">
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl text-center max-w-sm">
+                    <h3 class="text-3xl font-bold text-green-600 dark:text-green-400 mb-4">¡BINGO!</h3>
+                    <p class="text-lg text-gray-700 dark:text-gray-200 mb-6">¡Felicidades, has completado una línea o el cartón!</p>
+                    <button id="close-notification-modal" class="bg-green-600 hover:bg-green-700 dark:bg-green-800 dark:hover:bg-green-900 text-white font-bold py-3 px-6 rounded-lg transition-all">Genial</button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Sidebar Izquierda con Lista de Jugadores -->
+        <aside id="dashboard-bookmarks"
+            class="w-72 bg-[#0b0b0b] border-r border-gray-800 p-3 hidden lg:flex flex-col">
+
+            <!-- Título de la sección -->
+            <h3 class="text-base font-bold text-[#f5e6b6] mb-2">Rondas</h3>
+
+            <!-- Contenedor de partidas -->
+            <div id="partidas-status" 
+                class="grid grid-cols-2 gap-2 p-2 text-center text-sm">
+                <!-- Aquí se agregarán las partidas dinámicamente -->
+            </div>
+
+            <!-- 🔸 Separador -->
+            <hr class="border-t border-yellow-500 opacity-30 my-3">
+
+            <!-- Chat siempre abajo -->
+            <h2 class="text-lg font-bold text-gray-100 mb-2">Chat con jugadores</h2>
+
+            <!-- Caja de mensajes -->
+            <div id="chat-box"
+                class="flex-grow p-3 bg-[#111827] rounded-lg border border-gray-700 overflow-y-auto mb-3 shadow-inner text-gray-200 text-sm">
+                <!-- Los mensajes se mostrarán aquí -->
+            </div>
+
+            <!-- Input + botón -->
+            <div class="flex items-center space-x-2">
+                <input type="text" id="chat-input"
+                    class="flex-grow min-w-0 p-2 rounded-lg border border-gray-700 bg-[#111827] text-gray-200 
+                            text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                    placeholder="Escribe un mensaje...">
+                <button id="send-chat-button"
+                        class="shrink-0 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg text-sm transition-all">
+                    Enviar
+                </button>
+            </div>
+        </aside>
+    </div>
+
+    <!-- LOGIN / REGISTRO MODAL (se abre desde topbar) -->
+    <div id="auth-modal-overlay" class="fixed inset-0 bg-black/70 hidden"></div>
+
+    <div id="auth-modal"
+        class="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 
+                w-96 bg-[#111] border border-gray-800 rounded-xl shadow-2xl p-6 hidden">
+
+        <button id="auth-modal-close"
+                class="absolute right-3 top-3 text-gray-300 hover:text-white">✕</button>
+
+        <div id="auth-forms">
+
+            <!-- ================= LOGIN ================= -->
+            <div id="login-form" class="">
+                <h2 class="text-2xl font-bold text-[#f5e6b6] text-center mb-4">Iniciar sesión</h2>
+
+                <label class="block text-sm text-gray-300 mb-1">Cédula</label>
+                <input id="login-cedula"
+                    class="w-full mb-3 px-3 py-2 rounded bg-[#0f0f0f] border border-gray-700"
+                    type="text">
+
+                <label class="block text-sm text-gray-300 mb-1">Contraseña</label>
+                <input id="login-password"
+                    class="w-full mb-4 px-3 py-2 rounded bg-[#0f0f0f] border border-gray-700"
+                    type="password">
+
+                <div class="flex justify-between items-center">
+                    <button id="login-button"
+                            class="bg-[#d4af37] px-4 py-2 rounded font-semibold text-black">
+                        Entrar
+                    </button>
+
+                    <button id="show-register-button"
+                            class="text-sm text-gray-300 underline">
+                        ¿No tienes cuenta?
+                    </button>
+                </div>
+            </div>
+
+            <!-- ================= REGISTRO ================= -->
+            <div id="register-form" class="hidden">
+                <h2 class="text-2xl font-bold text-[#f5e6b6] text-center mb-4">Registro</h2>
+
+                <label class="block text-sm text-gray-300 mb-1">Nombre</label>
+                <input id="reg-name"
+                    class="w-full mb-3 px-3 py-2 rounded bg-[#0f0f0f] border border-gray-700"
+                    type="text">
+
+                <label class="block text-sm text-gray-300 mb-1">Cédula</label>
+                <input id="reg-cedula"
+                    class="w-full mb-3 px-3 py-2 rounded bg-[#0f0f0f] border border-gray-700"
+                    type="text">
+
+                <label class="block text-sm text-gray-300 mb-1">Teléfono</label>
+                <input id="reg-phone"
+                    class="w-full mb-3 px-3 py-2 rounded bg-[#0f0f0f] border border-gray-700"
+                    type="text">
+
+                <label class="block text-sm text-gray-300 mb-1">Género</label>
+                <select id="reg-genero"
+                        class="w-full mb-3 p-2 rounded bg-[#0f0f0f] border border-gray-700 text-gray-300">
+                    <option value="">Seleccione género...</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                </select>
+
+                <label class="block text-sm text-gray-300 mb-1">Fecha de nacimiento</label>
+                <input id="reg-fnac"
+                    type="date"
+                    class="w-full mb-3 p-2 rounded bg-[#0f0f0f] border border-gray-700 text-gray-300">
+
+                <label class="block text-sm text-gray-300 mb-1">Contraseña</label>
+                <input id="reg-password"
+                    class="w-full mb-4 px-3 py-2 rounded bg-[#0f0f0f] border border-gray-700"
+                    type="password">
+
+                <div class="flex justify-between items-center">
+                    <button id="register-button"
+                            class="bg-[#0CA66E] px-4 py-2 rounded font-semibold text-black">
+                        Registrar
+                    </button>
+
+                    <button id="show-login-button"
+                            class="text-sm text-gray-300 underline">
+                        Volver al login
+                    </button>
+                </div>
+
+                <div id="auth-message-box" class="mt-4 hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======= END DASHBOARD SHELL ======= -->
+
+    <script src="js/app.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+</body>
+</html>

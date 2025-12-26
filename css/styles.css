@@ -1,0 +1,734 @@
+/* =======================================
+   ESTILOS GENERALES
+======================================= */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #111111; /* negro profundo */
+    color: #F5F5F5;
+}
+
+.group-item {
+  transition: all 0.2s ease-in-out;
+}
+.group-item:hover {
+  transform: scale(1.02);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.02); }
+}
+
+.animate-pulse {
+  animation: pulse 1.2s ease-in-out;
+}
+
+#projection-history li {
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+#projection-history li:hover {
+  background-color: #f3f4f6; /* un gris suave */
+}
+
+#status-bar {
+  background: #EABE3F;
+  color: #473b3b;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dark #status-bar {
+  background: #374151;
+  color: #f9fafb;
+}
+
+/* =======================================
+   ESTILOS COMUNES DE CELDAS
+======================================= */
+.cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0.5rem;
+    transition: transform 0.2s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    user-select: none;
+}
+
+/* =======================================
+   TABLEROS DE BINGO
+======================================= */
+.bingo-board-column {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-auto-rows: 1fr;
+    gap: 6px;
+}
+
+/* styles.css */
+@keyframes highlightFlash {
+  0%, 100% { background-color: #FFD700; color: #111; }
+  50% { background-color: #FF6600; color: #fff; }
+}
+
+#admin-cards-list {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 6px;
+}
+
+.cards-display:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(255,215,0,0.9), 0 0 30px rgba(255,140,0,0.8);
+}
+
+.bingo-highlight {
+  animation: highlightFlash 0.8s ease 2;
+}
+
+.bingo-board-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 60px;
+    min-height: 60px;
+    aspect-ratio: 1/1;
+    font-weight: 800;
+    border-radius: 0.5rem;
+    margin-bottom: 6px;
+    transition: all 1s ease;
+}
+
+#partidas-status {
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Espaciado entre las partidas */
+  padding: 16px;
+}
+
+.bingo-header-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 60px;
+    min-height: 60px;
+    aspect-ratio: 1/1;
+    font-weight: 800;
+    border-radius: 0.5rem;
+    margin-bottom: 6px;
+    transition: all 0.3s ease;
+    background-color: #FFD700;
+    color: #111;
+    font-size: 1.8rem;
+    box-shadow: 0 4px 12px rgba(255,215,0,0.4);
+}
+
+.bingo-board-cell {
+    background-color: #ffffff;
+    font-size: 1.5rem;
+    border: 2px solid #444;
+    color: #000000;
+}
+
+.bingo-board-cell.called {
+    background-color: #FFD700; /* amarillo neón */
+    color: #111111;
+    font-weight: 800;
+    box-shadow: 0 0 15px rgba(255,215,0,0.6);
+}
+
+/* =======================================
+   CARTONES DE USUARIO
+======================================= */
+.bingo-card-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+    
+}
+
+.bingo-card-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: 1 / 1;
+    border: 1px solid #444;
+    background-color: #222; /* gris oscuro */
+    color: #F5F5F5;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, background-color 0.3s ease, box-shadow 0.3s ease;
+    font-weight: 700;
+    user-select: none;
+    
+}
+
+.bingo-card-cell:not(.marked):hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 12px #FF1A1A;
+    background-color: #FF6600;
+    color: #fff;
+}
+
+.bingo-card-cell.marked {
+    background-color: #39FF14; /* verde ácido */
+    color: #111111;
+    transform: scale(1.05);
+    box-shadow: 0 0 1px #39FF14;
+    position: relative;
+    border-radius: 0.5rem;
+}
+
+.bingo-card-cell.marked:hover {
+    transform: scale(1.12);
+    box-shadow: 0 0 18px #39FF14;
+}
+
+/* =======================================
+   GENERADOS / INTERACCIÓN
+======================================= */
+.generated-carton {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: calc(10% - 4px);
+    margin: 2px;
+    background-color: #FF1A1A;
+    color: white;
+    text-align: center;
+    padding: 8px 0;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: transform 0.2s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.generated-carton:hover {
+    transform: scale(1.05);
+    background-color: #FF6600;
+    box-shadow: 0 0 12px #FFEA00, 0 0 20px #FF6600;
+}
+
+/* =======================================
+   MODALES
+======================================= */
+.modal, .modal-overlay {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+}
+
+.modal {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #1f1f1f;
+    color: #F5F5F5;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+    z-index: 1000;
+    transition: opacity 0.3s ease;
+}
+
+.modal.active { display: block; }
+
+.modal button {
+    margin-top: 10px;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    background-color: #FF1A1A;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.3s ease;
+}
+#apartado-cartones {
+    display: flex;
+    flex-direction: column;
+}
+
+#cartones-vacio {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.modal button:hover {
+    background-color: #FF6600;
+    box-shadow: 0 0 10px #FFEA00;
+}
+.panelOculto {
+  display: none;
+}
+
+.modal-overlay {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 999;
+}
+
+.modal-overlay.active { display: block; }
+
+/* =======================================
+   TABS Y PANEL
+======================================= */
+.tab-content.hidden { display: none; }
+
+.tab-button {
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: #222;
+    color: #F5F5F5;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.tab-button:hover { background-color: #FF6600; }
+
+.tab-button.active {
+    background-color: #FFD700; /* amarillo neón */
+    color: #111111;
+    font-weight: bold;
+}
+
+.tab-button:focus {
+    outline: 2px solid #FFD700;
+}
+
+/* =======================================
+   RESPONSIVIDAD
+======================================= */
+@media (max-width: 768px) {
+    .bingo-board-cell,
+    .bingo-header-cell { width: 14vw; height: 14vw; }
+    .bingo-card-cell { font-size: 1rem; }
+}
+
+@media (max-width: 480px) {
+    .bingo-board-cell,
+    .bingo-header-cell { width: 16vw; height: 16vw; }
+    .bingo-card-cell { font-size: 0.9rem; }
+}
+
+@media (max-width: 400px) {
+    .bingo-card-grid { gap: 2px; }
+}
+
+/* Animación de marquee (scroll horizontal infinito) */
+@keyframes marquee {
+  from { transform: translateX(100%); }
+  to { transform: translateX(-100%); }
+}
+
+.animate-marquee {
+  display: inline-block;
+  animation: marquee 15s linear infinite;
+}
+
+#status-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 50; /* asegúrate de que quede encima de todo */
+}
+
+/* Asegura que la imagen no se vea pequeña cuando no se ha cargado */
+#modal-carton-img {
+  min-height: 500px;  /* Establece una altura mínima para que la imagen no se vea pequeña */
+  object-fit: contain; /* Asegura que la imagen no se deforme, manteniendo su proporción */
+  width: 100%;        /* Se ajusta al 100% del contenedor, pero mantiene la proporción */
+  margin-bottom: 20px; /* Añade un margen entre la imagen y el botón */
+}
+
+/* Aseguramos que el modal tenga un tamaño adecuado en cualquier tamaño de pantalla */
+#carton-modal > div {
+  min-width: 320px;    /* Un ancho mínimo para que se vea bien en pantallas pequeñas */
+  max-width: 500px;    /* Un máximo para que no se estire demasiado en pantallas grandes */
+}
+
+#comprobante-modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+#comprobante-modal img {
+  max-width: 100%;
+  max-height: 80vh;
+}
+
+#close-modal {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: gray;
+  cursor: pointer;
+}
+
+#close-modal:hover {
+  color: black;
+}
+.bingo-card {
+  transition: all 0.3s ease-in-out;
+}
+
+.bingo-header {
+  letter-spacing: 0.3em;
+}
+
+.bingo-cell.marked {
+  background: radial-gradient(circle, #d4af37 25%, #a67c00 90%);
+  color: #fff !important;
+}
+
+@keyframes bounceSparkle {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    text-shadow: 0 0 5px #fff, 0 0 10px #ffd700;
+  }
+  50% {
+    transform: translateY(-4px) scale(1.05);
+    text-shadow: 0 0 10px #fff, 0 0 20px #ffd700;
+  }
+}
+
+.animate-bounce-sparkle {
+  animation: bounceSparkle 1.2s infinite ease-in-out;
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    box-shadow:
+      inset 0 0 10px rgba(0, 0, 0, 0.3),
+      0 0 5px #fff,
+      0 0 10px #d4af37,
+      0 0 15px #d4af37;
+    transform: scale(1);
+    opacity: 1;
+  }
+  20% {
+    box-shadow:
+      inset 0 0 10px rgba(0, 0, 0, 0.3),
+      0 0 15px #fff,
+      0 0 25px #ffd700,
+      0 0 35px #fff;
+    transform: scale(1.03);
+    opacity: 0.95;
+  }
+  40% {
+    box-shadow:
+      inset 0 0 10px rgba(0, 0, 0, 0.3),
+      0 0 10px #fff,
+      0 0 20px #d4af37,
+      0 0 30px #ffd700;
+    transform: scale(1);
+    opacity: 1;
+  }
+  60% {
+    box-shadow:
+      inset 0 0 10px rgba(0, 0, 0, 0.3),
+      0 0 25px #fff,
+      0 0 35px #ffd700,
+      0 0 45px #fff;
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+  80% {
+    box-shadow:
+      inset 0 0 10px rgba(0, 0, 0, 0.3),
+      0 0 15px #fff,
+      0 0 25px #d4af37,
+      0 0 35px #fff;
+    transform: scale(1.02);
+    opacity: 0.97;
+  }
+}
+
+/* Estilo de la celda "FREE" con efecto escarcha */
+
+/* Estilo para la celda FREE sin fondo */
+.td-free {
+  background: transparent !important;
+  border: none !important;
+  position: relative;
+  overflow: visible;
+}
+
+/* Imagen FREE animada */
+.free-image {
+  width: 120%;
+  height: 120%;
+  object-fit: cover;
+  z-index: 100;
+  border-radius: 50%;
+  position: relative;
+  animation: expandShrink 3s infinite ease-in-out;
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 1))
+          drop-shadow(0 0 12px rgba(255, 215, 0, 1));
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Efecto de expansión y contracción */
+@keyframes expandShrink {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 8px rgba(6, 219, 16, 0.6))
+            drop-shadow(0 0 12px rgba(255, 215, 0, 1));
+  }
+  50% {
+    transform: scale(1.3);
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 1))
+            drop-shadow(0 0 40px rgba(255, 215, 0, 1));
+  }
+}
+
+.bingo-cell {
+  transition: background-color 0.3s ease;
+}
+
+.bingo-card:hover .bingo-cell {
+  transition: transform 0.2s ease-in-out;
+}
+
+#last-prev-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  justify-items: center;
+  align-items: center;
+  background: linear-gradient(135deg, #0d1b2a, #1b263b);
+  color: #fff;
+  padding: 1rem 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 0 20px rgba(0,0,0,0.6);
+  text-align: center;
+  font-family: 'Orbitron', sans-serif;
+}
+
+#last-prev-container .label {
+  font-size: 1.2rem;
+  color: #9be3ff;
+  margin-right: 0.3rem;
+}
+
+#last-prev-container .number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 0 10px #00c8ff, 0 0 20px #00c8ff;
+}
+
+@keyframes bounce-once {
+  0%   { transform: translateY(0); }
+  30%  { transform: translateY(-10px); }
+  50%  { transform: translateY(0); }
+  70%  { transform: translateY(-5px); }
+  100% { transform: translateY(0); }
+}
+
+.animate-bounce-once {
+  animation: bounce-once 0.8s ease-out 1;
+}
+@keyframes pulse-animation {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.animate-pulse {
+    animation: pulse-animation 1s ease-in-out infinite;
+}
+
+.bingo-card-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr)); /* 5 columnas flexibles */
+  gap: 0.5rem;                                      /* espacio entre celdas */
+  width: 100%;                                      /* ocupa todo el ancho */
+}
+
+.bingo-card-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.25rem;
+  aspect-ratio: 1 / 1;       /* mantiene cuadrado */
+}
+
+.bingo-header-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.25rem;
+  aspect-ratio: 1 / 1;       /* mantiene cuadrado */
+  max-width: 100%;           /* nunca excede el espacio asignado */
+  max-height: 100%;          /* evita que crezca más que las demás */
+}
+
+#app {
+  margin-top: 60px; /* espacio para el status bar */
+}
+/* ====== Casino theme additions ====== */
+:root{
+  --casino-black: #070707;
+  --casino-dark: #0b0b0b;
+  --casino-gold: #d4af37;
+  --casino-gold-soft: #f2c94c;
+  --casino-green: #0ca66e;
+  --casino-white: #ffffff;
+}
+
+/* Topbar */
+#dashboard-topbar {
+  background: linear-gradient(180deg, rgba(7,7,7,0.9), rgba(11,11,11,0.95));
+  border-bottom: 1px solid rgba(255,215,0,0.06);
+  backdrop-filter: blur(4px);
+  overflow: visible !important;
+}
+
+/* Players list */
+#dashboard-players-list .player-item {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:8px;
+  border-radius:8px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+  border:1px solid rgba(255,215,0,0.04);
+  color:var(--casino-white);
+  transition: transform .25s ease, background .25s ease;
+}
+
+#dashboard-players-list .player-item:hover { transform: translateX(6px); }
+
+/* Marquee */
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+#rank-marquee { display:inline-block; min-width: 500px; color: #f3f1e6; }
+.animate-marquee { animation: marquee 18s linear infinite; }
+
+/* Modal styles */
+#auth-modal { box-shadow: 0 12px 40px rgba(0,0,0,0.7); border: 1px solid rgba(212,175,55,0.12); }
+#auth-modal input { background: #0d0d0d; border:1px solid rgba(255,255,255,0.04); color: #eee; }
+
+/* Casino accents */
+.btn-casino-gold { background: var(--casino-gold); color: #000; box-shadow: 0 6px 16px rgba(212,175,55,0.12); }
+.badge-gold { background: linear-gradient(180deg, var(--casino-gold-soft), var(--casino-gold)); color: #000; padding:4px 8px; border-radius:6px; }
+
+/* Small utilities */
+.hidden-lg { display:none; }
+@media(min-width:1024px){ .hidden-lg{ display:block; } }
+
+/* selection pulse for chosen cards */
+.pulse-choose { animation: pulse-choose 0.9s ease-in-out 2; }
+@keyframes pulse-choose {
+  0% { box-shadow: 0 0 0 0 rgba(12,166,110,0.0); transform: scale(1); }
+  50% { box-shadow: 0 0 18px 6px rgba(12,166,110,0.12); transform: scale(1.03); }
+  100% { box-shadow: 0 0 0 0 rgba(12,166,110,0.0); transform: scale(1); }
+}
+
+/* Ranking panel */
+#ranking-panel {
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,215,0,0.04); /* borde dorado muy tenue */
+  border-radius: 12px;
+  color: var(--casino-white);
+  padding: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  transition: transform .25s ease, background .25s ease;
+}
+
+#ranking-panel:hover {
+  transform: translateY(-4px);
+}
+
+/* Contenedor de partidas */
+#partidas-status .partida-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,215,0,0.04);
+  color: var(--casino-white);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
+  transition: transform .25s ease, background .25s ease;
+}
+
+#partidas-status .partida-item:hover {
+  transform: scale(1.02);
+}
+
+#chat-input:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 6px rgba(212,175,55,0.4);
+}
+
+/* Botón enviar */
+#send-chat-button {
+  border-radius: 8px;
+  font-weight: bold;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+#send-chat-button:hover {
+  transform: scale(1.05);
+}
+
+/* Animación de entrada */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.dashboard-layout {
+  display: flex;
+  flex-direction: column; /* coloca los hijos en columna */
+  height: 88.5vh;          /* ocupa toda la altura de la ventana */
+}
+
+/* Menú arriba */
+.dashboard-layout #sidebarMenu {
+  flex: 0 0 auto;         /* altura fija según contenido */
+  border-bottom: 1px solid rgba(255,215,0,0.2); /* línea dorada sutil */
+  padding: 0.5rem 1rem;
+}
+
+/* Contenido abajo */
+.dashboard-layout #game-screen {
+  flex: 1 1 auto;         /* ocupa el resto del espacio */
+  overflow-y: auto;       /* scroll si el contenido es largo */
+  padding: 1rem;
+  color: #f3f4f6;         /* texto claro */
+}
+
+.ganador-flash {
+  animation: flash 0.4s alternate infinite;
+}
+
+@keyframes flash {
+  from { background-color: #065f46; }
+  to { background-color: #000; }
+}
